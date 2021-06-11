@@ -112,6 +112,7 @@
                     <th data-field="categoryName">分类</th>
                     <th data-field="jobName">作业名称</th>
                     <th data-field="lastExecuteTime">上次执行时间</th>
+                    <th data-field="lastSuccessTime">上次成功时间</th>
                     <th data-field="nextExecuteTime">下次执行时间</th>
                     <th data-field="monitorSuccess">作业执行成功次数</th>
                     <th data-field="monitorFail">作业执行失败次数</th>
@@ -194,12 +195,18 @@
     });
 
     function actionFormatter(value, row, index) {
-        return ['<a class="btn btn-primary btn-xs" id="viewDetail" type="button"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;查看详细</a>'].join('');
+        return ['<a class="btn btn-primary btn-xs" id="edit" type="button"><i class="fa fa-edit" aria-hidden="true"></i>&nbsp;编辑</a>',
+            '&nbsp;&nbsp;',
+            '<a class="btn btn-primary btn-xs" id="viewDetail" type="button"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;查看详细</a>'].join('');
     };
     window.actionEvents = {
         'click #viewDetail': function (e, value, row, index) {
             location.href = "view/job/record/listUI.shtml?jobId=" + row.monitorJob;
         },
+        'click #edit': function (e, value, row, index) {
+            var monitorId = row.monitorId;
+            location.href = "view/job/monitor/editUI.shtml?monitorId=" + monitorId;
+        }
     };
 
     function queryParams(params) {

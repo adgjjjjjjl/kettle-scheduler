@@ -1,5 +1,7 @@
 package com.zhaxd.web.service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -154,5 +156,30 @@ public class TransMonitorService {
         resultMap.put("name", "转换");
         resultMap.put("data", resultList);
         return resultMap;
+    }
+
+    /**
+     * @param monitorId 转换监控ID
+     * @return KTransMonitor
+     * @Title getJobMonitor
+     * @Description 获取转换监控信息
+     */
+    public KTransMonitor getTransMonitor(Integer monitorId) {
+        return kTransMonitorDao.single(monitorId);
+    }
+
+    /**
+     * @param lastExecuteTime 上次执行时间
+     * @param lastSuccessTime  上次成功时间
+     * @return void
+     * @Title update
+     * @Description 更新转换监控信息
+     */
+    public void update(Integer monitorId, String lastExecuteTime, String lastSuccessTime) throws ParseException {
+        KTransMonitor kJobMonitor = kTransMonitorDao.single(monitorId);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(Constant.STANDARD_FORMAT_STRING);
+        kJobMonitor.setLastSuccessTime(simpleDateFormat.parse(lastExecuteTime));
+        kJobMonitor.setLastSuccessTime(simpleDateFormat.parse(lastSuccessTime));
+        kTransMonitorDao.updateTemplateById(kJobMonitor);
     }
 }

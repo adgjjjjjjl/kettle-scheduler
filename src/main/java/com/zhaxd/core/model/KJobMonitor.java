@@ -24,6 +24,8 @@ public class KJobMonitor implements Comparable<KJobMonitor>{
 	private Date lastExecuteTime;
 	//下次执行时间
 	private Date nextExecuteTime;
+	//上次成功执行时间
+	private Date lastSuccessTime;
 
 	private String jobName;
 
@@ -91,6 +93,14 @@ public class KJobMonitor implements Comparable<KJobMonitor>{
 		this.nextExecuteTime = nextExecuteTime;
 	}
 
+	public Date getLastSuccessTime() {
+		return lastSuccessTime;
+	}
+
+	public void setLastSuccessTime(Date lastSuccessTime) {
+		this.lastSuccessTime = lastSuccessTime;
+	}
+
 	public String getJobName() {
 		return jobName;
 	}
@@ -112,7 +122,7 @@ public class KJobMonitor implements Comparable<KJobMonitor>{
         return this.getMonitorSuccess() - kJobMonitor.getMonitorSuccess();//按照成功次数排序;
     }
 
-	public KJobMonitor(Integer monitorId, Integer addUser, Integer monitorFail, Integer monitorJob, Integer monitorStatus, Integer monitorSuccess, String runStatus, Date lastExecuteTime, Date nextExecuteTime, String jobName, String categoryName) {
+	public KJobMonitor(Integer monitorId, Integer addUser, Integer monitorFail, Integer monitorJob, Integer monitorStatus, Integer monitorSuccess, String runStatus, Date lastExecuteTime, Date nextExecuteTime, String jobName, String categoryName, Date lastSuccessTime) {
 		this.monitorId = monitorId;
 		this.addUser = addUser;
 		this.monitorFail = monitorFail;
@@ -124,6 +134,7 @@ public class KJobMonitor implements Comparable<KJobMonitor>{
 		this.nextExecuteTime = nextExecuteTime;
 		this.jobName = jobName;
 		this.categoryName = categoryName;
+		this.lastExecuteTime = lastSuccessTime;
 	}
 
 	@Override
@@ -140,6 +151,7 @@ public class KJobMonitor implements Comparable<KJobMonitor>{
 				", nextExecuteTime=" + nextExecuteTime +
 				", jobName='" + jobName + '\'' +
 				", categoryName='" + categoryName + '\'' +
+				", lastSuccessTime='" + lastSuccessTime + '\'' +
 				'}';
 	}
 }

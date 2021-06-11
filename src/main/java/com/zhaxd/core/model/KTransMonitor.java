@@ -24,6 +24,8 @@ public class KTransMonitor implements Comparable<KTransMonitor> {
     private Date lastExecuteTime;
     //下次执行时间
     private Date nextExecuteTime;
+    //上次成功执行时间
+    private Date lastSuccessTime;
     private String categoryName;
     private String transName;
 
@@ -102,6 +104,14 @@ public class KTransMonitor implements Comparable<KTransMonitor> {
         this.nextExecuteTime = nextExecuteTime;
     }
 
+    public Date getLastSuccessTime() {
+        return lastSuccessTime;
+    }
+
+    public void setLastSuccessTime(Date lastSuccessTime) {
+        this.lastSuccessTime = lastSuccessTime;
+    }
+
     public String getCategoryName() {
         return categoryName;
     }
@@ -123,7 +133,7 @@ public class KTransMonitor implements Comparable<KTransMonitor> {
         return this.getMonitorSuccess() - o.getMonitorSuccess();
     }
 
-    public KTransMonitor(Integer monitorId, Integer addUser, Integer monitorFail, Integer monitorStatus, Integer monitorSuccess, Integer monitorTrans, String runStatus, Date lastExecuteTime, Date nextExecuteTime, String categoryName, String transName) {
+    public KTransMonitor(Integer monitorId, Integer addUser, Integer monitorFail, Integer monitorStatus, Integer monitorSuccess, Integer monitorTrans, String runStatus, Date lastExecuteTime, Date nextExecuteTime, String categoryName, String transName, Date lastSuccessTime) {
         this.monitorId = monitorId;
         this.addUser = addUser;
         this.monitorFail = monitorFail;
@@ -135,6 +145,7 @@ public class KTransMonitor implements Comparable<KTransMonitor> {
         this.nextExecuteTime = nextExecuteTime;
         this.categoryName = categoryName;
         this.transName = transName;
+        this.lastSuccessTime = lastSuccessTime;
     }
 
     @Override
@@ -151,6 +162,7 @@ public class KTransMonitor implements Comparable<KTransMonitor> {
                 ", nextExecuteTime=" + nextExecuteTime +
                 ", categoryName='" + categoryName + '\'' +
                 ", transName='" + transName + '\'' +
+                ", lastSuccessTime='" + lastSuccessTime + '\'' +
                 '}';
     }
 }

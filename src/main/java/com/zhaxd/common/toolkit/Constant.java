@@ -37,6 +37,7 @@ public class Constant extends Const {
 	public static final String FORMAT_XML = "xml";
 	public static final String FORMAT_STREAM = "stream";
 	public static final int VALID_TIMESTAMP = 15;
+	public static final  String STANDARD_FORMAT_STRING = "yyyy-MM-dd HH:mm:ss";
 
 	/** Kettle */
 	public static final String TYPE_JOB = "job";

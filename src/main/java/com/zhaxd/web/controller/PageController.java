@@ -140,12 +140,24 @@ public class PageController {
 	public String transMonitorListUI(){
 		return "monitor/t-list";
 	}
-	
+
+	@RequestMapping("trans/monitor/editUI.shtml")
+	public String transMonitorEditUI(Integer monitorId, Model model){
+		model.addAttribute("monitorId", monitorId);
+		return "monitor/t-edit";
+	}
+
 	@RequestMapping("job/monitor/listUI.shtml")
 	public String jobMonitorListUI(){
 		return "monitor/j-list";
 	}
-	
+
+	@RequestMapping("job/monitor/editUI.shtml")
+	public String jobMonitorEditUI(Integer monitorId, Model model){
+		model.addAttribute("monitorId", monitorId);
+		return "monitor/j-edit";
+	}
+
 	/**==========monitor start==========**/
 
 	/**==========quartz start==========**/

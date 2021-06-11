@@ -8,7 +8,7 @@
     <repositories>
         <repository>
             <id>pentaho</id>
-            <url>http://nexus.pentaho.org/content/groups/omni/</url>
+            <url>https://nexus.pentaho.org/content/groups/omni/</url>
         </repository>
     </repositories>
     <build>
@@ -32,7 +32,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <org.springframework-version>4.3.1.RELEASE</org.springframework-version>
         <beetlsql-version>2.10.18</beetlsql-version>
-        <mysql-connector-java-version>5.1.38</mysql-connector-java-version>
+        <mysql-connector-java-version>8.0.21</mysql-connector-java-version>
         <druid-version>1.0.29</druid-version>
         <commons-configuration.version>1.10</commons-configuration.version>
         <commons.fileupload-version>1.3.2</commons.fileupload-version>
@@ -53,6 +53,11 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>9.0-801.jdbc4</version>
+        </dependency>
         <dependency>
             <groupId>com.oracle</groupId>
             <artifactId>ojdbc6</artifactId>
@@ -347,6 +352,22 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
             <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>biz.aQute.bnd</groupId>
+            <artifactId>biz.aQute.bndlib</artifactId>
+            <version>5.2.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>biz.aQute.bnd</groupId>
+            <artifactId>bndlib</artifactId>
+            <version>2.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>biz.aQute.bnd</groupId>
+            <artifactId>bndlib</artifactId>
+            <version>2.1.0</version>
         </dependency>
     </dependencies>
 </project>

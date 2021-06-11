@@ -1,11 +1,14 @@
 package com.zhaxd.web.service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.zhaxd.core.model.KJob;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -152,5 +155,30 @@ public class JobMonitorService {
         resultMap.put("name", "作业");
         resultMap.put("data", resultList);
         return resultMap;
+    }
+
+    /**
+     * @param monitorId 作业监控ID
+     * @return KJobMonitor
+     * @Title getJobMonitor
+     * @Description 获取作业监控信息
+     */
+    public KJobMonitor getJobMonitor(Integer monitorId) {
+        return kJobMonitorDao.single(monitorId);
+    }
+
+    /**
+     * @param lastExecuteTime 上次执行时间
+     * @param lastSuccessTime  上次成功时间
+     * @return void
+     * @Title update
+     * @Description 更新作业监控信息
+     */
+    public void update(Integer monitorId, String lastExecuteTime, String lastSuccessTime) throws ParseException {
+        KJobMonitor kJobMonitor = kJobMonitorDao.single(monitorId);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(Constant.STANDARD_FORMAT_STRING);
+        kJobMonitor.setLastSuccessTime(simpleDateFormat.parse(lastExecuteTime));
+        kJobMonitor.setLastSuccessTime(simpleDateFormat.parse(lastSuccessTime));
+        kJobMonitorDao.updateTemplateById(kJobMonitor);
     }
 }

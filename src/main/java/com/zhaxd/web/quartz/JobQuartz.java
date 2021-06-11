@@ -12,6 +12,7 @@ import org.beetl.sql.core.*;
 import org.beetl.sql.core.db.DBStyle;
 import org.beetl.sql.core.db.MySqlStyle;
 import org.beetl.sql.core.db.OracleStyle;
+import org.beetl.sql.core.db.PostgresStyle;
 import org.beetl.sql.ext.DebugInterceptor;
 import org.pentaho.di.core.ProgressNullMonitorListener;
 import org.pentaho.di.core.exception.KettleException;
@@ -28,6 +29,7 @@ import org.quartz.*;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @DisallowConcurrentExecution
@@ -88,11 +90,11 @@ public class JobQuartz implements InterruptableJob {
         KRepository kRepository = (KRepository) KRepositoryObject;
         Integer repositoryId = kRepository.getRepositoryId();
         KettleDatabaseRepository kettleDatabaseRepository = null;
-        if (RepositoryUtil.KettleDatabaseRepositoryCatch.containsKey(repositoryId)) {
-            kettleDatabaseRepository = RepositoryUtil.KettleDatabaseRepositoryCatch.get(repositoryId);
-        } else {
+//        if (RepositoryUtil.KettleDatabaseRepositoryCatch.containsKey(repositoryId) && RepositoryUtil.KettleDatabaseRepositoryCatch.get(repositoryId).test()) {
+//            kettleDatabaseRepository = RepositoryUtil.KettleDatabaseRepositoryCatch.get(repositoryId);
+//        } else {
             kettleDatabaseRepository = RepositoryUtil.connectionRepository(kRepository);
-        }
+//        }
         if (null != kettleDatabaseRepository) {
             RepositoryDirectoryInterface directory = kettleDatabaseRepository.loadRepositoryDirectoryTree()
                     .findDirectory(jobPath);
@@ -110,14 +112,24 @@ public class JobQuartz implements InterruptableJob {
             Date jobStopDate = null;
             String logText = null;
             try {
+                KJobMonitor kJobMonitor = getKJobMonitor(DbConnectionObject,userId,jobId);
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat(Constant.STANDARD_FORMAT_STRING);
 //                jobStartDate = new Date();
+                job.addParameterDefinition("lasttime",simpleDateFormat.format(kJobMonitor.getLastExecuteTime() == null ? new Date() : kJobMonitor.getLastExecuteTime()),"上次执行时间");
+                //上次成功执行时间
+                job.addParameterDefinition("starttime", simpleDateFormat.format(kJobMonitor.getLastSuccessTime() == null ? new Date() : kJobMonitor.getLastSuccessTime()),"上次成功执行时间");
+                //本次执行时间
+                job.addParameterDefinition("endtime", simpleDateFormat.format(executeTime),"本次执行时间");
                 job.run();
                 job.waitUntilFinished();
                 jobStopDate = new Date();
             } catch (Exception e) {
                 exception = e.getMessage();
+                e.printStackTrace();
                 recordStatus = 2;
             } finally {
+                //为解决连接断开后，存储库查询报错问题，在每次查询后都关闭存储过连接
+                RepositoryUtil.disConnectionRepository(kettleDatabaseRepository,repositoryId);
                 if (job.isFinished()) {
                     if (job.getErrors() > 0) {
                         recordStatus = 2;
@@ -165,12 +177,21 @@ public class JobQuartz implements InterruptableJob {
         Date jobStopDate = null;
         String logText = null;
         try {
+            KJobMonitor kJobMonitor = getKJobMonitor(DbConnectionObject,userId,jobId);
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(Constant.STANDARD_FORMAT_STRING);
             jobStartDate = new Date();
+            //上次执行时间
+            job.addParameterDefinition("lasttime",simpleDateFormat.format(kJobMonitor.getLastExecuteTime() == null ? new Date() : kJobMonitor.getLastExecuteTime()),"上次执行时间");
+            //上次成功执行时间
+            job.addParameterDefinition("starttime", simpleDateFormat.format(kJobMonitor.getLastSuccessTime() == null ? new Date() : kJobMonitor.getLastSuccessTime()),"上次成功执行时间");
+            //本次执行时间
+            job.addParameterDefinition("endtime", simpleDateFormat.format(lastExecuteTime),"本次执行时间");
             job.run();
             job.waitUntilFinished();
             jobStopDate = new Date();
         } catch (Exception e) {
             exception = e.getMessage();
+            e.printStackTrace();
             recordStatus = 2;
         } finally {
             if (null != job && job.isFinished()) {
@@ -226,7 +247,7 @@ public class JobQuartz implements InterruptableJob {
         }else if("mysql".equalsIgnoreCase(Constant.DATASOURCE_TYPE)){
             dbStyle = new MySqlStyle();
         }else{
-            dbStyle = new OracleStyle();
+            dbStyle = new PostgresStyle();
         }
         SQLLoader loader = new ClasspathLoader("/");
         UnderlinedNameConversion nc = new UnderlinedNameConversion();
@@ -244,6 +265,8 @@ public class JobQuartz implements InterruptableJob {
         if (kJobRecord.getRecordStatus() == 1) {// 证明成功
             //成功次数加1
             templateOne.setMonitorSuccess(templateOne.getMonitorSuccess() + 1);
+            //更新上次成功运行时间
+            templateOne.setLastSuccessTime(lastExecuteTime);
             sqlManager.updateById(templateOne);
         } else if (kJobRecord.getRecordStatus() == 2) {// 证明失败
             //失败次数加1
@@ -251,6 +274,31 @@ public class JobQuartz implements InterruptableJob {
             sqlManager.updateById(templateOne);
         }
         DSTransactionManager.commit();
+    }
+
+    private KJobMonitor getKJobMonitor(Object DbConnectionObject,String userId,String jobId){
+        // 写入转换运行记录到数据库
+        DBConnectionModel DBConnectionModel = (DBConnectionModel) DbConnectionObject;
+        ConnectionSource source = ConnectionSourceHelper.getSimple(DBConnectionModel.getConnectionDriveClassName(),
+                DBConnectionModel.getConnectionUrl(), DBConnectionModel.getConnectionUser(), DBConnectionModel.getConnectionPassword());
+        DBStyle dbStyle = null;
+        if("oracle".equalsIgnoreCase(Constant.DATASOURCE_TYPE)){
+            dbStyle = new OracleStyle();
+        }else if("mysql".equalsIgnoreCase(Constant.DATASOURCE_TYPE)){
+            dbStyle = new MySqlStyle();
+        }else{
+            dbStyle = new PostgresStyle();
+        }
+        SQLLoader loader = new ClasspathLoader("/");
+        UnderlinedNameConversion nc = new UnderlinedNameConversion();
+        SQLManager sqlManager = new SQLManager(dbStyle, loader,
+                source, nc, new Interceptor[]{new DebugInterceptor()});
+        KJobMonitor template = new KJobMonitor();
+        template.setMonitorStatus(1);
+        template.setAddUser(Integer.valueOf(userId));
+        template.setMonitorJob(Integer.valueOf(jobId));
+        KJobMonitor templateOne = sqlManager.templateOne(template);
+        return  templateOne;
     }
 
     @Override

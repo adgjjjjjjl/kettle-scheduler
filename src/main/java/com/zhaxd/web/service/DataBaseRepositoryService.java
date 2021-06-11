@@ -38,15 +38,17 @@ public class DataBaseRepositoryService {
 	public List<RepositoryTree> getTreeList(Integer repositoryId) throws KettleException{
 		KettleDatabaseRepository kettleDatabaseRepository = null;
 		List<RepositoryTree> allRepositoryTreeList = new ArrayList<RepositoryTree>();
-		if (RepositoryUtil.KettleDatabaseRepositoryCatch.containsKey(repositoryId)){
-			kettleDatabaseRepository = RepositoryUtil.KettleDatabaseRepositoryCatch.get(repositoryId);
-		}else {
+//		if (RepositoryUtil.KettleDatabaseRepositoryCatch.containsKey(repositoryId) && RepositoryUtil.KettleDatabaseRepositoryCatch.get(repositoryId).test()){
+//			kettleDatabaseRepository = RepositoryUtil.KettleDatabaseRepositoryCatch.get(repositoryId);
+//		}else {
 			KRepository kRepository = kRepositoryDao.unique(repositoryId);
 			kettleDatabaseRepository = RepositoryUtil.connectionRepository(kRepository);
-		}
+//		}
 		if (null != kettleDatabaseRepository){
 			List<RepositoryTree> repositoryTreeList = new ArrayList<RepositoryTree>();
-			allRepositoryTreeList = RepositoryUtil.getAllDirectoryTreeList(kettleDatabaseRepository, "/", repositoryTreeList);	
+			allRepositoryTreeList = RepositoryUtil.getAllDirectoryTreeList(kettleDatabaseRepository, "/", repositoryTreeList);
+			//为解决连接断开后，存储库查询报错问题，在每次查询后都关闭存储过连接
+			RepositoryUtil.disConnectionRepository(kettleDatabaseRepository,repositoryId);
 		}
 		return allRepositoryTreeList;
 	}

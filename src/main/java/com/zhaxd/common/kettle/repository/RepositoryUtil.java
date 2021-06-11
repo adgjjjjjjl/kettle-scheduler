@@ -20,8 +20,8 @@ import com.zhaxd.core.model.KRepository;
 
 public class RepositoryUtil {
 
-	public static Map<Integer, KettleDatabaseRepository> KettleDatabaseRepositoryCatch 
-														= new HashMap<Integer, KettleDatabaseRepository>();
+//	public static Map<Integer, KettleDatabaseRepository> KettleDatabaseRepositoryCatch
+//														= new HashMap<Integer, KettleDatabaseRepository>();
 	
 	
 	public static void main(String[] args) throws KettleException{
@@ -81,10 +81,10 @@ public class RepositoryUtil {
 	        KettleDatabaseRepository repository = new KettleDatabaseRepository();
 	        repository.init(repositoryInfo);
 	        repository.connect(kRepository.getRepositoryUsername(), kRepository.getRepositoryPassword());
-	        //添加缓存
-	        if (null != kRepository.getRepositoryId()){
-	        	KettleDatabaseRepositoryCatch.put(kRepository.getRepositoryId(), repository);	
-	        }	
+//	        //添加缓存
+//	        if (null != kRepository.getRepositoryId()){
+//	        	KettleDatabaseRepositoryCatch.put(kRepository.getRepositoryId(), repository);
+//	        }
 	        return repository;	
 		}
 		return null;
@@ -100,7 +100,7 @@ public class RepositoryUtil {
 	public static void disConnectionRepository(KettleDatabaseRepository repository, Integer ID){
 		repository.disconnect();
 		repository.clearSharedObjectCache();
-		KettleDatabaseRepositoryCatch.remove(ID);
+//		KettleDatabaseRepositoryCatch.remove(ID);
 	}
 	
 	/**
@@ -108,13 +108,13 @@ public class RepositoryUtil {
 	 * @Description 断开全部资源库
 	 * @return void
 	 */
-	public static void disConnectionAllRepository(){
-		KettleDatabaseRepositoryCatch.forEach((ID, repository) -> {
-			repository.disconnect();
-			repository.clearSharedObjectCache();			
-		});
-		KettleDatabaseRepositoryCatch.clear();
-	}
+//	public static void disConnectionAllRepository(){
+//		KettleDatabaseRepositoryCatch.forEach((ID, repository) -> {
+//			repository.disconnect();
+//			repository.clearSharedObjectCache();
+//		});
+//		KettleDatabaseRepositoryCatch.clear();
+//	}
 	
 	
 	/**

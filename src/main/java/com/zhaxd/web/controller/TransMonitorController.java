@@ -2,6 +2,7 @@ package com.zhaxd.web.controller;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.zhaxd.core.dto.ResultDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -42,5 +43,20 @@ public class TransMonitorController {
     public String getAllFail(HttpServletRequest request) {
         KUser kUser = (KUser) request.getSession().getAttribute(Constant.SESSION_ID);
         return JsonUtils.objectToJson(transMonitorService.getAllFail(kUser.getuId()));
+    }
+
+    @RequestMapping("getTransMonitor.shtml")
+    public String getJobMonitor(Integer monitorId) {
+        return ResultDto.success(transMonitorService.getTransMonitor(monitorId));
+    }
+
+    @RequestMapping("update.shtml")
+    public String update(Integer monitorId,String lastExecuteTime, String lastSuccessTime) {
+        try {
+            transMonitorService.update(monitorId, lastExecuteTime, lastSuccessTime);
+            return ResultDto.success();
+        } catch (Exception e) {
+            return ResultDto.success(e.toString());
+        }
     }
 }

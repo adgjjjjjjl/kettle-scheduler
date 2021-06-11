@@ -8,6 +8,7 @@ import org.beetl.sql.core.*;
 import org.beetl.sql.core.db.DBStyle;
 import org.beetl.sql.core.db.MySqlStyle;
 import org.beetl.sql.core.db.OracleStyle;
+import org.beetl.sql.core.db.PostgresStyle;
 import org.beetl.sql.ext.DebugInterceptor;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
@@ -51,7 +52,7 @@ public class QuartzListener implements JobListener{
         }else if("mysql".equalsIgnoreCase(Constant.DATASOURCE_TYPE)){
             dbStyle = new MySqlStyle();
         }else{
-            dbStyle = new OracleStyle();
+            dbStyle = new PostgresStyle();
         }
 		SQLLoader loader = new ClasspathLoader("/");
 		UnderlinedNameConversion nc = new  UnderlinedNameConversion();
