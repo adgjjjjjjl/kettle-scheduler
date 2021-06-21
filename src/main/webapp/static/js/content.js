@@ -70,3 +70,43 @@ function WinMove() {
         })
         .disableSelection();
 };
+
+$.ajaxSetup({
+    beforeSend: function(jqXHR, settings) {
+        if (window.location.search.indexOf("token=") > 0 && settings.url.indexOf("token=") < 0) {
+
+            if(settings.type == "GET"){
+                settings.url += settings.url.match(/\?/) ? "&" : "?";
+                settings.url += "token=" + getUrlParam("token");
+            }
+            else{
+                if(settings.data){
+                    settings.data["token"] = getUrlParam("token");
+                }
+            }
+        }
+    }
+});
+
+//URL参数获取工作
+function getUrlParam(paraName) {
+    var url = document.location.toString();
+    var arrObj = url.split("?");
+
+    if (arrObj.length > 1) {
+        var arrPara = arrObj[1].split("&");
+        var arr;
+
+        for (var i = 0; i < arrPara.length; i++) {
+            arr = arrPara[i].split("=");
+
+            if (arr != null && arr[0] == paraName) {
+                return arr[1];
+            }
+        }
+        return "";
+    }
+    else {
+        return "";
+    }
+}

@@ -8,7 +8,7 @@
     <base href="<%=basePath %>">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="renderer" content="webkit">
-    <title>Kettle调度监控平台</title>
+    <title>滇航数据整合平台</title>
     <link rel="shortcut icon" href="static/img/favicon.ico">
     <link href="static/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
     <link href="static/css/font-awesome.min.css?v=4.4.0" rel="stylesheet">
@@ -25,7 +25,7 @@
             <ul class="nav" id="side-menu">
                 <li class="nav-header">
                     <div class="dropdown profile-element">
-                        <span><img alt="image" src="static/img/logo.jpg"></span>
+                        <span><img alt="image" src="static/img/logo.png"></span>
                     </div>
                     <div class="logo-element">Data</div>
                 </li>
@@ -100,7 +100,7 @@
                 <div class="navbar-header">
                     <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="javascript:void(0)"><i
                             class="fa fa-bars"></i> </a>
-                    <div class="navbar-title">Kettle调度监控平台</div>
+                    <div class="navbar-title">滇航数据整合平台</div>
                 </div>
                 <div class="navbar-user">你好，${SESSION_ID.uNickname}</div>
             </nav>
