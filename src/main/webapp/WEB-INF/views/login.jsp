@@ -24,7 +24,7 @@ if(window != window.parent){
 </script>
 <body class="login">
 <div class="logo">
-    <a href="javascript:void(0)"><span style="font-size: 24px;color: white;">Kettle调度监控平台</span></a>
+    <a href="javascript:void(0)"><span style="font-size: 24px;color: white;">滇航数据整合平台</span></a>
 </div>
 <div class="content">
     <form id="loginForm" name="loginForm" class="login-form" action="index/login.shtml" method="POST" novalidate>
