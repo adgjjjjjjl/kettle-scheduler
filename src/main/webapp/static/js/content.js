@@ -95,13 +95,15 @@ function getUrlParam(paraName) {
 
     if (arrObj.length > 1) {
         var arrPara = arrObj[1].split("&");
-        var arr;
+        var index;
 
         for (var i = 0; i < arrPara.length; i++) {
-            arr = arrPara[i].split("=");
+            index = arrPara[i].indexOf("=");
 
-            if (arr != null && arr[0] == paraName) {
-                return arr[1];
+            var name = arrPara[i].substr(0,index);
+            var value = arrPara[i].substr(index+1,arrPara[i].length)
+            if (name == paraName) {
+                return value;
             }
         }
         return "";
