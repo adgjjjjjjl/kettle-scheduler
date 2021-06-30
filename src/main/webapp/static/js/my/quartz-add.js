@@ -29,17 +29,11 @@ $().ready(function () {
         rules: {
             quartzDescription: {
                 required: true
-            },
-            cQuarz: {
-                required: true
             }
         },
         messages: {
             quartzDescription: {
                 required: icon + "请输入执行策略名称"
-            },
-            cQuarz: {
-                required: icon + "请选择cron编码"
             }
         },
         submitHandler: function (form) {

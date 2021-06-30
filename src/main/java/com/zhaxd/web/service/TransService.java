@@ -258,7 +258,7 @@ public class TransService {
         // 添加任务
         // 判断转换执行类型
         try {
-            if (new Integer(1).equals(kTrans.getTransQuartz())) {//如果是只执行一次
+            if (StringUtils.isEmpty(quartzCron)) {//如果是只执行一次
                 nextExecuteTime = QuartzManager.addOnceJob(quartzBasic.get("jobName"), quartzBasic.get("jobGroupName"),
                         quartzBasic.get("triggerName"), quartzBasic.get("triggerGroupName"),
                         TransQuartz.class, quartzParameter);
