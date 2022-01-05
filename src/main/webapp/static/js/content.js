@@ -75,14 +75,17 @@ $.ajaxSetup({
     beforeSend: function(jqXHR, settings) {
         if (window.location.search.indexOf("token=") > 0 && settings.url.indexOf("token=") < 0) {
 
-            if(settings.type == "GET"){
+            if(settings.type === "GET"){
                 settings.url += settings.url.match(/\?/) ? "&" : "?";
                 settings.url += "token=" + getUrlParam("token");
             }
             else{
-                if(settings.data){
-                    settings.data["token"] = getUrlParam("token");
+                if(settings.data !== ""){
+                    settings.data += "&";
                 }
+                settings.data += "token=" + encodeURIComponent(getUrlParam("token"));
+                //将token放入请求头中，解决后台拦截器无法获取请求体重的参数token的问题
+                jqXHR.setRequestHeader("Authorization", getUrlParam("token"));
             }
         }
     }

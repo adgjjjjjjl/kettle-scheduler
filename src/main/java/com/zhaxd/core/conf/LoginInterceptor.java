@@ -1,8 +1,6 @@
 package com.zhaxd.core.conf;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.zhaxd.common.toolkit.Constant;
 import com.zhaxd.common.toolkit.RSACoder;
 import com.zhaxd.core.model.KUser;
 import com.zhaxd.web.service.UserService;
@@ -10,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.zhaxd.common.toolkit.Constant;
-
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.net.URI;
 import java.net.URL;
 import java.util.HashMap;
@@ -27,6 +25,11 @@ public class LoginInterceptor implements HandlerInterceptor{
 		Object attribute = request.getSession().getAttribute(Constant.SESSION_ID);
 		String uri = request.getRequestURI();
 		String token = request.getParameter("token");
+		System.out.println("TOKEN:" + token);
+		if(token == null || token.isEmpty()){
+			token = request.getHeader("Authorization");
+			System.out.println("Authorization:" + token);
+		}
 		if (token != null && !token.isEmpty()) {
 			String userId;
 			try {
